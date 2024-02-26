@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bouncing Clock</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #000;
+      font-family: 'Arial', sans-serif; /* Use your preferred font family */
+    }
+
+    #clock {
+      position: absolute;
+      color: #d05000; /* Set clock color to #d05000 */
+      font-size: 2em;
+      font-weight: bold; /* Set font weight to bold */
+      transform-origin: 50% 50%;
+    }
+  </style>
+</head>
+<body>
+  <div id="clock"></div>
+
+  <script>
+    var v = 75; // reduced velocity
+    var t = 0; // time offset
+
+    function calculatePosition(time) {
+      var p = (time + t) * v;
+      var dimensions = { width: 125, height: 26 }; // adjust as needed
+
+      var screen = {
+        width: window.innerWidth - dimensions.width,
+        height: window.innerHeight - dimensions.height
+      };
+
+      // Calculate position based on provided expression
+      var lw = dimensions.width;
+      var lh = dimensions.height;
+      var w = screen.width;
+      var h = screen.height;
+
+      var x = Math.floor(p/w)%2 == 1 ? w - (p%w) : p%w;  
+      var y = Math.floor(p/h)%2 == 1 ? h - (p%h) : p%h; 
+
+      return [x , y];
+    }
+
+    function updateClockPosition(time) {
+      const clockElement = document.getElementById('clock');
+      const [newX, newY] = calculatePosition(time);
+      clockElement.style.transform = `translate(${newX}px, ${newY}px)`;
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+
+      const clockElement = document.getElementById('clock');
+      clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    function animateClock() {
+      const time = Date.now() / 1000; // convert milliseconds to seconds
+      updateClockPosition(time);
+      updateClock();
+      requestAnimationFrame(animateClock);
+    }
+
+    animateClock();
+
+    // Update clock position on window resize
+    window.addEventListener('resize', function() {
+      const time = Date.now() / 1000; // convert milliseconds to seconds
+      updateClockPosition(time);
+    });
+  </script>
+</body>
+</html>
