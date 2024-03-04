@@ -30,12 +30,12 @@
     function calculatePosition(time) {
       const position = time * velocity;
       const screen = {
-        width: window.innerWidth - 150, // Adjust as needed
-        height: window.innerHeight - 28 // Adjust as needed
+        width: window.innerWidth,
+        height: window.innerHeight
       };
 
-      const x = Math.abs(position % (2 * screen.width) - screen.width);
-      const y = Math.abs(position % (2 * screen.height) - screen.height);
+      const x = (position % screen.width + screen.width) % screen.width;
+      const y = (position % screen.height + screen.height) % screen.height;
 
       return [x, y];
     }
@@ -71,3 +71,4 @@
   </script>
 </body>
 </html>
+
