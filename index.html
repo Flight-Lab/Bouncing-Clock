@@ -9,14 +9,14 @@
       margin: 0;
       overflow: hidden;
       background-color: #000;
-      font-family: 'Arial', sans-serif; /* Use your preferred font family */
+      font-family: 'Arial', sans-serif;
     }
 
     #clock {
       position: absolute;
-      color: #d05000; /* Set clock color to #d05000 */
+      color: #d05000;
       font-size: 3em;
-      font-weight: bold; /* Set font weight to bold */
+      font-weight: bold;
       transform-origin: 50% 50%;
     }
   </style>
@@ -25,48 +25,36 @@
   <div id="clock"></div>
 
   <script>
-    var v = 75; // reduced velocity
-    var t = 0; // time offset
+    const velocity = 75;
+    let timeOffset = 0;
 
     function calculatePosition(time) {
-      var p = (time + t) * v;
-      var dimensions = { width: 150, height: 28 }; // adjust as needed for 1280 x 800 screen
-
-      var screen = {
-        width: 1280 - dimensions.width,
-        height: 800 - dimensions.height
+      const position = (time + timeOffset) * velocity;
+      const screen = {
+        width: window.innerWidth - 150, // Adjust as needed
+        height: window.innerHeight - 28 // Adjust as needed
       };
 
-      // Calculate position based on provided expression
-      var lw = dimensions.width;
-      var lh = dimensions.height;
-      var w = screen.width;
-      var h = screen.height;
+      const x = Math.floor(position / screen.width) % 2 === 1 ? screen.width - (position % screen.width) : position % screen.width;
+      const y = Math.floor(position / screen.height) % 2 === 1 ? screen.height - (position % screen.height) : position % screen.height;
 
-      var x = Math.floor(p/w)%2 == 1 ? w - (p%w) : p%w;  
-      var y = Math.floor(p/h)%2 == 1 ? h - (p%h) : p%h; 
-
-      return [x , y];
+      return [x, y];
     }
 
     function updateClockPosition(time) {
-      const clockElement = document.getElementById('clock');
       const [newX, newY] = calculatePosition(time);
-      clockElement.style.transform = `translate(${newX}px, ${newY}px)`;
+      document.getElementById('clock').style.transform = `translate(${newX}px, ${newY}px)`;
     }
 
     function updateClock() {
       const now = new Date();
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      const seconds = now.getSeconds().toString().padStart(2, '0');
+      const [hours, minutes, seconds] = [now.getHours(), now.getMinutes(), now.getSeconds()].map(value => value.toString().padStart(2, '0'));
 
-      const clockElement = document.getElementById('clock');
-      clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+      document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
     }
 
     function animateClock() {
-      const time = Date.now() / 1000; // convert milliseconds to seconds
+      const time = Date.now() / 1000;
       updateClockPosition(time);
       updateClock();
       requestAnimationFrame(animateClock);
@@ -74,9 +62,8 @@
 
     animateClock();
 
-    // Update clock position on window resize
     window.addEventListener('resize', function() {
-      const time = Date.now() / 1000; // convert milliseconds to seconds
+      const time = Date.now() / 1000;
       updateClockPosition(time);
     });
   </script>
