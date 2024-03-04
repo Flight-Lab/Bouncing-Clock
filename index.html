@@ -31,8 +31,8 @@
     function calculatePosition(time) {
       const position = (time + timeOffset) * velocity;
       const screen = {
-        width: window.innerWidth - 150, // Adjust as needed
-        height: window.innerHeight - 28 // Adjust as needed
+        width: window.innerWidth - 190, // Adjust as needed
+        height: window.innerHeight - 50 // Adjust as needed
       };
 
       const x = Math.floor(position / screen.width) % 2 === 1 ? screen.width - (position % screen.width) : position % screen.width;
