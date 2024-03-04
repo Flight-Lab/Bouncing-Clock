@@ -26,24 +26,26 @@
 
   <script>
     const velocity = 75;
-    let timeOffset = 0;
 
     function calculatePosition(time) {
-      const position = (time + timeOffset) * velocity;
+      const position = time * velocity;
       const screen = {
-        width: window.innerWidth - 190, // Adjust as needed
-        height: window.innerHeight - 50 // Adjust as needed
+        width: window.innerWidth - 150, // Adjust as needed
+        height: window.innerHeight - 28 // Adjust as needed
       };
 
-      const x = Math.floor(position / screen.width) % 2 === 1 ? screen.width - (position % screen.width) : position % screen.width;
-      const y = Math.floor(position / screen.height) % 2 === 1 ? screen.height - (position % screen.height) : position % screen.height;
+      const x = Math.abs(position % (2 * screen.width) - screen.width);
+      const y = Math.abs(position % (2 * screen.height) - screen.height);
 
       return [x, y];
     }
 
     function updateClockPosition(time) {
       const [newX, newY] = calculatePosition(time);
-      document.getElementById('clock').style.transform = `translate(${newX}px, ${newY}px)`;
+      const clockElement = document.getElementById('clock');
+
+      clockElement.style.left = newX + 'px';
+      clockElement.style.top = newY + 'px';
     }
 
     function updateClock() {
