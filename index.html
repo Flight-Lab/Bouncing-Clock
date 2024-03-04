@@ -30,11 +30,11 @@
 
     function calculatePosition(time) {
       var p = (time + t) * v;
-      var dimensions = { width: 125, height: 28 }; // adjust as needed
+      var dimensions = { width: 150, height: 28 }; // adjust as needed for 1280 x 800 screen
 
       var screen = {
-        width: window.innerWidth - dimensions.width,
-        height: window.innerHeight - dimensions.height
+        width: 1280 - dimensions.width,
+        height: 800 - dimensions.height
       };
 
       // Calculate position based on provided expression
