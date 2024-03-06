@@ -5,70 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bouncing Clock</title>
   <style>
-    body {
+    body,
+    html {
+      height: 100%;
       margin: 0;
-      overflow: hidden;
-      background-color: #000;
-      font-family: 'Arial', sans-serif;
+      background-color: black;
     }
-
-    #clock {
+    .container {
+      position: relative;
+      height: 100%;
+    }
+    .clock {
       position: absolute;
-      color: #d05000;
       font-size: 3em;
-      font-weight: bold;
-      transform-origin: 50% 50%;
+      font-weight: bolder;
+      color: #d05000;
+      transform: translate(0, 0);
     }
   </style>
 </head>
 <body>
-  <div id="clock"></div>
-
+  <div class="container">
+    <div class="clock" id="clock">12:00:00</div>
+  </div>
   <script>
-    const velocity = 75;
-
-    function calculatePosition(time) {
-      const position = time * velocity;
-      const screen = {
-        width: window.innerWidth,
-        height: window.innerHeight
-      };
-
-      const x = (position % screen.width + screen.width) % screen.width;
-      const y = (position % screen.height + screen.height) % screen.height;
-
-      return [x, y];
-    }
-
-    function updateClockPosition(time) {
-      const [newX, newY] = calculatePosition(time);
-      const clockElement = document.getElementById('clock');
-
-      clockElement.style.left = newX + 'px';
-      clockElement.style.top = newY + 'px';
-    }
-
+    const clock = document.getElementById('clock');
+    let x = 0;
+    let y = 0;
+    let xDirection = 3;
+    let yDirection = 3;
     function updateClock() {
       const now = new Date();
-      const [hours, minutes, seconds] = [now.getHours(), now.getMinutes(), now.getSeconds()].map(value => value.toString().padStart(2, '0'));
-
-      document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      const timeString = `${hours}:${minutes}:${seconds}`;
+      clock.textContent = timeString;
     }
-
-    function animateClock() {
-      const time = Date.now() / 1000;
-      updateClockPosition(time);
+    function animate() {
+      const container = document.querySelector('.container');
+      const maxX = container.clientWidth - clock.clientWidth;
+      const maxY = container.clientHeight - clock.clientHeight;
+      x += xDirection;
+      y += yDirection;
+      if (x > maxX || x < 0) {
+        xDirection = -xDirection;
+      }
+      if (y > maxY || y < 0) {
+        yDirection = -yDirection;
+      }
+      clock.style.transform = `translate(${x}px, ${y}px)`;
       updateClock();
-      requestAnimationFrame(animateClock);
+      requestAnimationFrame(animate);
     }
-
-    animateClock();
-
-    window.addEventListener('resize', function() {
-      const time = Date.now() / 1000;
-      updateClockPosition(time);
-    });
+    updateClock();
+    animate();
   </script>
 </body>
 </html>
-
